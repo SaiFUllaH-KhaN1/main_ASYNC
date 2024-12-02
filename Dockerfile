@@ -1,5 +1,5 @@
 # Dockerfile example
-FROM python:3.9.0
+FROM python:3.9-slim
 
 WORKDIR /app
 COPY requirementsless.txt /app/requirementsless.txt
