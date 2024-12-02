@@ -30,8 +30,7 @@ jobs:
         context: .
         push: true
         tags: "saifullahedu0/main_async:main_ASYNC"
-        build-args: # Add this to specify build arguments if needed
-          - "--no-cache" # Forces a fresh build, ignoring cached layers
+        build-args: "--no-cache"
 
     - name: Debug - Show installed Python packages
       run: docker run --rm saifullahedu0/main_async:main_ASYNC pip freeze
