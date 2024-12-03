@@ -1,14 +1,12 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+FROM python:3.8-slim
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+COPY req.txt .
+RUN pip install -r req.txt
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r req.txt
+COPY . .
 
-# Run the application
+EXPOSE 5000
+
 CMD ["gunicorn", "--workers=5", "--max-requests=200", "--max-requests-jitter=20", "--timeout", "550", "routes:app", "--bind", "0.0.0.0:5000"]
