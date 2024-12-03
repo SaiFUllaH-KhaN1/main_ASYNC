@@ -22,7 +22,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Debug - Show requirements file
-      run: cat requirementsless.txt
+      run: cat requirements.txt
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
@@ -33,4 +33,4 @@ jobs:
         build-args: "--no-cache"
 
     - name: Debug - Show installed Python packages
-      run: docker run --rm saifullahedu0/main_async:main_ASYNC pip freeze
+      run: docker run --rm saifullahedu0/main_async:main_ASYNC
