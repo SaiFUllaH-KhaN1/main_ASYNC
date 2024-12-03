@@ -1,11 +1,17 @@
-FROM python:3.9-slim
+# Use a lighter base image
+FROM python:3.9-alpine
 
+# Set the working directory in the container
 WORKDIR /app
 
+# Copy only the requirements file to leverage Docker cache layering
 COPY requirements.txt .
-RUN pip install --upgrade pip==23.2.1 && \
-    pip install -r requirements.txt
 
+# Install required packages without cache
+RUN pip install --upgrade pip==23.2.1 && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of your application code
 COPY . .
 
 # Inform Docker about the port the app listens on
