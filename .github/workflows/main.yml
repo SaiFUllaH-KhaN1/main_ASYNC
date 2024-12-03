@@ -43,7 +43,7 @@ jobs:
     # Step 6: Debug - Show installed Python packages in Docker image
     - name: Debug Installed Dependencies
       run: |
-        docker run --rm saifullahedu0/main_async:main_ASYNC pip freeze
+        docker run --rm saifullahedu0/main_async:main_ASYNC
 
     # Step 7: Explicitly clear old Docker images and containers (if needed)
     - name: Remove Old Docker Images
