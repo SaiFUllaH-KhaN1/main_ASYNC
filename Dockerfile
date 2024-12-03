@@ -1,5 +1,5 @@
-# Use a lighter base image
-FROM python:3.9-alpine
+# Use a base image that's still light but more compatible than Alpine
+FROM python:3.9-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -7,9 +7,15 @@ WORKDIR /app
 # Copy only the requirements file to leverage Docker cache layering
 COPY requirements.txt .
 
-# Install required packages without cache
-RUN pip install --upgrade pip==23.2.1 && \
-    pip install --no-cache-dir -r requirements.txt
+# Update system packages, install dependencies, and clean up in a single layer to keep image size down
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libc6-dev \
+    libffi-dev \
+    && pip install --upgrade pip==23.2.1 \
+    && pip install --no-cache-dir -r requirements.txt \
+    && apt-get purge -y --auto-remove gcc libc6-dev libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy the rest of your application code
 COPY . .
