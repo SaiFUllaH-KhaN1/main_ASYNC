@@ -1,50 +1,26 @@
 name: Build and Push Docker image
 
 on:
+  push:
+    branches:
+      - main  
   pull_request:
     branches:
-      - main
+      - main  
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
-
     - name: Checkout code
       uses: actions/checkout@v2
-
-    # Step 2: Clean the runner environment
-    - name: Clean Cache and Artifacts
-      run: |
-        rm -rf ~/.cache/pip
-        docker system prune -af || true
-
-    # Step 3: Debug - Show requirements file
-    - name: Debug - Show requirements file
-      run: cat requirements.txt
-
-    # Step 4: Log in to Docker Hub
     - name: Log in to Docker Hub
       uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-
-    # Step 5: Build and push Docker image
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
-        context: .
         push: true
-        tags: "saifullahedu0/main_async:main_ASYNC"
-        no-cache: true
-
-    # Step 6: Debug - Show installed Python packages in Docker image
-    - name: Debug Installed Dependencies
-      run: |
-        docker run --rm saifullahedu0/main_async:main_ASYNC
-
-    # Step 7: Explicitly clear old Docker images and containers (if needed)
-    - name: Remove Old Docker Images
-      run: docker image prune -af || true
+        tags: "saifullahedu0/main_async:${{ github.ref_name }}"
