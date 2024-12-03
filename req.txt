@@ -104,11 +104,9 @@ omegaconf==2.3.0
 onnx==1.16.0
 onnxruntime==1.15.1
 openai==1.35.10
-openpyxl==3.1.2
 orjson==3.10.0
 overrides==7.6.0
 packaging==23.2
-paragraphs==0.2.1
 pathspec==0.12.1
 pipwin==0.5.2
 platformdirs==4.2.0
@@ -124,7 +122,6 @@ pycparser==2.22
 pycryptodome==3.20.0
 pydub==0.25.1
 pyjsparser==2.7.1
-PyJWT==2.8.0
 pyparsing==3.1.1
 python-dotenv==1.0.0
 python-engineio==4.8.2
