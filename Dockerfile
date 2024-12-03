@@ -2,12 +2,10 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Copy requirements file and install dependencies
 COPY requirements.txt .
 RUN pip install --upgrade pip==23.2.1 && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy application files
 COPY . .
 
 # Inform Docker about the port the app listens on
