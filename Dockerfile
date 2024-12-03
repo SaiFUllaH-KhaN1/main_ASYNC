@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY requirements.txt .
 RUN pip install --upgrade pip==23.2.1 && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install -r requirements.txt
 
 COPY . .
 
