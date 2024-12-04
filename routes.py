@@ -128,9 +128,9 @@ def delete_old_directories():
                 shutil.rmtree(dir_path)
 ###     ###     ###
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(delete_old_directories, 'interval', hours=6)
-scheduler.start()
+# scheduler = BackgroundScheduler()
+# scheduler.add_job(delete_old_directories, 'interval', hours=6)
+# scheduler.start()
 
 
 # Configuration for the audio directory
@@ -202,11 +202,11 @@ def decide():
         return jsonify(error="Unexpected Fault or Interruption")
     
 
-@app.teardown_appcontext
-def shutdown_scheduler(exception=None):
-    # This app route shutsdown scheduler when app context is destroyed
-    if scheduler.running:
-        scheduler.shutdown()
+# @app.teardown_appcontext
+# def shutdown_scheduler(exception=None):
+#     # This app route shutsdown scheduler when app context is destroyed
+#     if scheduler.running:
+#         scheduler.shutdown()
 
 if __name__ == '__main__': # runs in local deployment only, and NOT in docker since CMD command takes care of it
 
