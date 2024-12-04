@@ -1,15 +1,12 @@
-from flask import g, Flask, render_template, request, Response, jsonify, session, send_from_directory, flash, redirect, url_for
+from flask import Flask, render_template, request, Response, jsonify, session, send_from_directory, flash, redirect, url_for
 import os
 from dotenv import load_dotenv
 import json
 import prompt_logics as LCD
 from flask_caching import Cache
-import uuid
 import shutil 
-import urllib.request
 from werkzeug.datastructures import FileStorage
 from flask_basicauth import BasicAuth
-import base64
 import time
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 import google.generativeai as genai
@@ -20,10 +17,7 @@ from flask_cors import CORS
 from functools import wraps
 import io
 import openai
-from urllib.error import URLError, HTTPError
-from urllib.parse import urlparse, urljoin
 import traceback
-import validators
 import prompt_logics as LCD
 # from gevent.pywsgi import WSGIServer # in local development use, for gevent in local served  
 
