@@ -28,5 +28,5 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: yourusername/yourapp:latest
+        tags: saifullahed0/main_async:main_async
 
