@@ -41,10 +41,11 @@ cache_dir = 'cache'
 
 # Check if the cache directory exists, and create it if it does not
 if not os.path.exists(cache_dir):
-    os.makedirs(cache_dir)
+    os.makedirs(cache_dir, exist_ok=True)
     print(f"Cache directory '{cache_dir}' was created.")
 else:
     print(f"Cache directory '{cache_dir}' already exists.")
+
 
 app.config['BASIC_AUTH_REALM'] = 'realm'
 app.config['BASIC_AUTH_USERNAME'] = os.getenv('BASIC_AUTH_USERNAME')
