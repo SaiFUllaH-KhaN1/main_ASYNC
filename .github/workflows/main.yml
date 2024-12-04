@@ -1,3 +1,10 @@
+name: Build and Push Docker Image main_asyn
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,6 +27,6 @@ jobs:
       with:
         context: .
         file: ./Dockerfile
-        push: true
-        tags: saifullahedu0/main_async:main_async
         no-cache: true
+        push: true
+        tags: saifullahed0/main_async:main_async
