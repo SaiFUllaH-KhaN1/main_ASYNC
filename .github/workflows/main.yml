@@ -22,6 +22,4 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: saifullahedu0/main_async:main_async
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
         no-cache: true
