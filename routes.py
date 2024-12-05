@@ -115,7 +115,7 @@ def cron():
 
 ### SCHEDULED DELETION OF folders of imagefolder_ and faiss_index_ ###
 def delete_old_directories():
-    time_to_delete_files_older_than = timedelta(hours=6)
+    time_to_delete_files_older_than = timedelta(seconds=30)
     print(f"Scheduler is running the delete_old_directories function to delete files older than {time_to_delete_files_older_than}.")
     
     base_path = os.path.dirname(os.path.abspath(__file__))
@@ -130,7 +130,7 @@ def delete_old_directories():
 ###     ###     ###
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(delete_old_directories, 'interval', hours=6)
+scheduler.add_job(delete_old_directories, 'interval', seconds=30)
 scheduler.start()
 
 
