@@ -19,7 +19,12 @@ import io
 import openai
 import traceback
 import prompt_logics as LCD
+import logging
 # from gevent.pywsgi import WSGIServer # in local development use, for gevent in local served  
+
+log_format = '%(asctime)s - %(levelname)s - %(message)s'
+logger = logging
+logger.basicConfig(level= logging.DEBUG, format= log_format)
 
 load_dotenv(dotenv_path="HUGGINGFACEHUB_API_TOKEN.env")
 
@@ -42,9 +47,9 @@ cache_dir = 'cache'
 # Check if the cache directory exists, and create it if it does not
 if not os.path.exists(cache_dir):
     os.makedirs(cache_dir, exist_ok=True)
-    print(f"Cache directory '{cache_dir}' was created.")
+    logger.info(f"Cache directory '{cache_dir}' was created.")
 else:
-    print(f"Cache directory '{cache_dir}' already exists.")
+    logger.info(f"Cache directory '{cache_dir}' already exists.")
 
 
 app.config['BASIC_AUTH_REALM'] = 'realm'
@@ -93,30 +98,30 @@ def delete_indexes():
     for item in os.listdir(base_path):
         dir_path = os.path.join(base_path, item)
         if os.path.isdir(dir_path) and item.startswith("faiss_index_"):
-            print(f"Deleting Faiss directory: {dir_path}")
+            logger.info(f"Deleting Faiss directory: {dir_path}")
             shutil.rmtree(dir_path)
         elif os.path.isdir(dir_path) and item.startswith("imagefolder_"):
-            print(f"Deleting image directory: {dir_path}")
+            logger.info(f"Deleting image directory: {dir_path}")
             shutil.rmtree(dir_path)
         elif os.path.isdir(dir_path) and item.startswith("audio_"):
-            print(f"Deleting audio directory: {dir_path}")
+            logger.info(f"Deleting audio directory: {dir_path}")
             shutil.rmtree(dir_path)
         elif os.path.isdir(dir_path) and item.startswith("pdf_dir"):
-            print(f"Deleting pdf directory: {dir_path}")
+            logger.info(f"Deleting pdf directory: {dir_path}")
             shutil.rmtree(dir_path)
 
 @app.route("/cron", methods=['POST'])
 @basic_auth.required
 def cron():
     delete_indexes()
-    print("Deleted FAISS index")
+    logger.info("Deleted FAISS index")
     return jsonify(message="FAISS and imagefolder and audio index directories deleted")
 ###     ###     ### 
 
 ### SCHEDULED DELETION OF folders of imagefolder_ and faiss_index_ ###
 def delete_old_directories():
     time_to_delete_files_older_than = timedelta(seconds=30)
-    print(f"Scheduler is running the delete_old_directories function to delete files older than {time_to_delete_files_older_than}.")
+    logger.info(f"Scheduler is running the delete_old_directories function to delete files older than {time_to_delete_files_older_than}.")
     
     base_path = os.path.dirname(os.path.abspath(__file__))
     for item in os.listdir(base_path):
@@ -125,7 +130,7 @@ def delete_old_directories():
             # Check if directory is older than a specified time
             dir_age = datetime.fromtimestamp(os.path.getmtime(dir_path))
             if datetime.now() - dir_age > time_to_delete_files_older_than:
-                print(f"Deleting directory: {dir_path}, it has modified date of {dir_age}")
+                logger.info(f"Deleting directory: {dir_path}, it has modified date of {dir_age}")
                 shutil.rmtree(dir_path)
 ###     ###     ###
 
@@ -139,9 +144,9 @@ audio_dir = 'audio_files'
 # Check if the cache directory exists, and create it if it does not
 if not os.path.exists(audio_dir):
     os.makedirs(audio_dir, exist_ok=True)
-    print(f"Audio directory '{audio_dir}' was created.")
+    logger.info(f"Audio directory '{audio_dir}' was created.")
 else:
-    print(f"Audio directory '{audio_dir}' already exists.")
+    logger.info(f"Audio directory '{audio_dir}' already exists.")
 
 
 @app.route("/decide", methods=["GET", "POST"])
@@ -149,7 +154,7 @@ def decide():
 
     if request.method == 'POST':
         scenario = request.form.get('scenario')
-        print(f"Scenario type:{scenario}")
+        logger.info(f"Scenario type:{scenario}")
 
         model_type = request.args.get('model', 'azure') # to set default model
         model_name = request.args.get('modelName', 'gpt') # to set default model name
@@ -169,37 +174,37 @@ def decide():
                                         )
                     embeddings = AzureOpenAIEmbeddings(azure_deployment="text-embedding-ada-002")
 
-                print(f"LLM is :: {llm}\n embedding is :: {embeddings}\n")
+                logger.info(f"LLM is :: {llm}\n embedding is :: {embeddings}\n")
 
                 chain, query = LCD.PRODUCE_LEARNING_OBJ_COURSE(scenario, llm, model_type)
 
-                print("response_LO_CA started")
+                logger.info("response_LO_CA started")
                 response_LO_CA = chain({"scenario": query})
-                print(f"{response_LO_CA}")
-                print("response_LO_CA ended")
+                logger.info(f"{response_LO_CA}")
+                logger.info("response_LO_CA ended")
 
                 end_time = time.time()
                 execution_time = end_time - start_time
                 minutes, seconds = divmod(execution_time, 60)
                 formatted_time = f"{int(minutes):02}:{int(seconds):02}"
                 execution_time_block = {"executionTime":f"{formatted_time}"}
-                print(f"{response_LO_CA['text']}")
+                logger.info(f"{response_LO_CA['text']}")
                 response_with_time = json.loads(response_LO_CA['text']) 
                 response_with_time.update(execution_time_block)
-                print(f"{json.dumps(response_with_time)}")
+                logger.info(f"{json.dumps(response_with_time)}")
 
                 return Response(json.dumps(response_with_time), mimetype='application/json')
                 # return jsonify(response_LO_CA['text'])       
 
             except Exception as e:
-                print(f"An error occurred or abrupt Model change: {str(e)}")
-                print(traceback.format_exc())
+                logger.info(f"An error occurred or abrupt Model change: {str(e)}")
+                logger.info(traceback.format_exc())
                 return jsonify(error=f"An error occurred or abrupt Model change: {str(e)}")
 
         else:
-            print("None")
+            logger.info("None")
         
-        print("Unexpected Fault or Interruption")
+        logger.info("Unexpected Fault or Interruption")
         return jsonify(error="Unexpected Fault or Interruption")
     
 
