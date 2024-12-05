@@ -137,7 +137,7 @@ scheduler.start()
 # Configuration for the audio directory
 audio_dir = 'audio_files'
 # Check if the cache directory exists, and create it if it does not
-if not os.path.exists(audio_dir):
+if not os.path.exists(audio_dir, exist_ok=True):
     os.makedirs(audio_dir)
     print(f"Audio directory '{audio_dir}' was created.")
 else:
