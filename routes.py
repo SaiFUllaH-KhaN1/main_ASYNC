@@ -20,8 +20,8 @@ import openai
 import traceback
 import prompt_logics as LCD
 import logging
+import sys, socket
 # from gevent.pywsgi import WSGIServer # in local development use, for gevent in local served  
-
 log_format = '%(asctime)s - %(levelname)s - %(message)s'
 logger = logging
 logger.basicConfig(level= logging.DEBUG, format= log_format)
@@ -134,16 +134,22 @@ def delete_old_directories():
                 shutil.rmtree(dir_path)
 ###     ###     ###
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(delete_old_directories, 'interval', seconds=30)
-scheduler.start()
-
+try:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(("127.0.0.1", 47200))
+except socket.error:
+    logger.info("!!!scheduler already started, DO NOTHING")
+else:
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(delete_old_directories, 'interval', seconds=30)
+    scheduler.start()
+    logger.info("scheduler started")
 
 # Configuration for the audio directory
 audio_dir = 'audio_files'
 # Check if the cache directory exists, and create it if it does not
 if not os.path.exists(audio_dir):
-    os.makedirs(audio_dir, exist_ok=True)
+    os.makedirs(audio_dir)
     logger.info(f"Audio directory '{audio_dir}' was created.")
 else:
     logger.info(f"Audio directory '{audio_dir}' already exists.")
@@ -213,6 +219,10 @@ def shutdown_scheduler(exception=None):
     # This app route shutsdown scheduler when app context is destroyed
     if scheduler.running:
         scheduler.shutdown()
+    try:
+        sock.close()
+    except Exception as e:
+        print(f"Error closing the socket: {e}")
 
 if __name__ == '__main__': # runs in local deployment only, and NOT in docker since CMD command takes care of it
 
