@@ -214,15 +214,15 @@ def decide():
         return jsonify(error="Unexpected Fault or Interruption")
     
 
-@app.teardown_appcontext
-def shutdown_scheduler(exception=None):
-    # This app route shutsdown scheduler when app context is destroyed
-    if scheduler.running:
-        scheduler.shutdown()
-    try:
-        sock.close()
-    except Exception as e:
-        print(f"Error closing the socket: {e}")
+# @app.teardown_appcontext
+# def shutdown_scheduler(exception=None):
+#     # This app route shutsdown scheduler when app context is destroyed
+#     if scheduler.running:
+#         scheduler.shutdown()
+#     try:
+#         sock.close()
+#     except Exception as e:
+#         print(f"Error closing the socket: {e}")
 
 if __name__ == '__main__': # runs in local deployment only, and NOT in docker since CMD command takes care of it
 
