@@ -136,14 +136,13 @@ def delete_old_directories():
 
 try:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(("127.0.0.1", 47200))
+    sock.bind(("0.0.0.0", 47200))
 except socket.error:
     logger.info("!!!scheduler already started, DO NOTHING")
 else:
     scheduler = BackgroundScheduler()
     scheduler.add_job(delete_old_directories, 'interval', seconds=30)
     scheduler.start()
-    logger.info("scheduler started")
 
 # Configuration for the audio directory
 audio_dir = 'audio_files'
