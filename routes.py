@@ -21,6 +21,7 @@ import traceback
 import prompt_logics as LCD
 import logging
 import sys, socket
+import asyncio
 # from gevent.pywsgi import WSGIServer # in local development use, for gevent in local served  
 log_format = '%(asctime)s - %(levelname)s - %(message)s'
 logger = logging
@@ -120,7 +121,7 @@ def cron():
 
 ### SCHEDULED DELETION OF folders of imagefolder_ and faiss_index_ ###
 def delete_old_directories():
-    time_to_delete_files_older_than = timedelta(seconds=30)
+    time_to_delete_files_older_than = timedelta(seconds=60)
     logger.info(f"Scheduler is running the delete_old_directories function to delete files older than {time_to_delete_files_older_than}.")
     
     base_path = os.path.dirname(os.path.abspath(__file__))
@@ -141,8 +142,9 @@ except socket.error:
     logger.info("!!!scheduler already started, DO NOTHING")
 else:
     scheduler = BackgroundScheduler()
-    scheduler.add_job(delete_old_directories, 'interval', seconds=30)
+    scheduler.add_job(delete_old_directories, 'interval', seconds=60)
     scheduler.start()
+
 
 # Configuration for the audio directory
 audio_dir = 'audio_files'
@@ -155,7 +157,7 @@ else:
 
 
 @app.route("/decide", methods=["GET", "POST"])
-def decide():
+async def decide():
 
     if request.method == 'POST':
         scenario = request.form.get('scenario')
@@ -181,13 +183,8 @@ def decide():
 
                 logger.info(f"LLM is :: {llm}\n embedding is :: {embeddings}\n")
 
-                chain, query = LCD.PRODUCE_LEARNING_OBJ_COURSE(scenario, llm, model_type)
-
-                logger.info("response_LO_CA started")
-                response_LO_CA = chain({"scenario": query})
-                logger.info(f"{response_LO_CA}")
-                logger.info("response_LO_CA ended")
-
+                response_LO_CA = LCD.PRODUCE_LEARNING_OBJ_COURSE(scenario, llm, model_type)
+                
                 end_time = time.time()
                 execution_time = end_time - start_time
                 minutes, seconds = divmod(execution_time, 60)
