@@ -18,4 +18,9 @@ def PRODUCE_LEARNING_OBJ_COURSE(query, llm, model_type):
         chain = LLMChain(prompt=promptSelector, llm=llm.bind(generation_config={"response_mime_type": "application/json"}))    
     else:
         chain = LLMChain(prompt=promptSelector, llm=llm.bind(response_format={"type": "json_object"}))
-    return chain, query
+    
+    response_LO_CA = chain({"scenario": "Pacific ocean"})
+    print(f"{response_LO_CA['text']}")
+    response_LO_CA = chain({"scenario": query})
+
+    return response_LO_CA
