@@ -16,4 +16,4 @@ COPY . /app
 EXPOSE 5000
 
 # Set the command to start the application
-CMD ["gunicorn", "--workers=5", "--max-requests=200", "--max-requests-jitter=20", "--timeout", "550", "routes:app", "--bind", "0.0.0.0:5000"]
+CMD ["gunicorn", "--worker-class=gevent", "--workers=5", "--max-requests=200", "--max-requests-jitter=20", "--timeout", "550", "routes:app", "--bind", "0.0.0.0:5000"]
